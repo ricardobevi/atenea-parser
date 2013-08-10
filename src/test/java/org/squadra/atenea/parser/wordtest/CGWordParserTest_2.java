@@ -76,7 +76,7 @@ public class CGWordParserTest_2 {
 		System.out.println(new CG3WordParser()
 				.parseWord("pero	[pero] <'but'> <adv> KC "));
 		System.out.println(new CG3WordParser()
-				.parseWord("ya=que	[ya=que] <'since'>� KS <'as'> KS "));
+				.parseWord("ya=que	[ya=que] <'since'> KS <'as'> KS "));
 		System.out.println(new CG3WordParser()
 				.parseWord("de=modo=que	[de=modo=que] <cjt> <'such=that'> KS "));
 		assertTrue(true);

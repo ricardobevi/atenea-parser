@@ -14,13 +14,13 @@ public class CGWordParserTest_3 {
 		System.out.println(new CG3WordParser()
 				.parseWord("yo	[yo] PERS MF 1S NOM "));
 		System.out.println(new CG3WordParser()
-				.parseWord("ella	[�l] PERS F 3S NOM/PIV "));
+				.parseWord("ella	[él] PERS F 3S NOM/PIV "));
 		System.out.println(new CG3WordParser()
 				.parseWord("vosotros	[vosotros] PERS M 2P NOM/PIV "));
 		System.out.println(new CG3WordParser()
-				.parseWord("m�	[yo] PERS MF 1S PIV "));
+				.parseWord("mí	[yo] PERS MF 1S PIV "));
 		System.out.println(new CG3WordParser()
-				.parseWord("s�	[s�] <refl> PERS MF SP PIV "));
+				.parseWord("sí	[sí] <refl> PERS MF SP PIV "));
 		System.out.println(new CG3WordParser()
 				.parseWord("los	[lo] <sam3> PERS M 3P ACC "));
 		System.out.println(new CG3WordParser()
@@ -61,7 +61,7 @@ public class CGWordParserTest_3 {
 		System.out.println("============= PRONOMBRE POSESIVO ==============");
 		
 		System.out.println(new CG3WordParser()
-				.parseWord("m�o	[m�o] <poss 1S> DET M S "));
+				.parseWord("mío	[mío] <poss 1S> DET M S "));
 		System.out.println(new CG3WordParser()
 				.parseWord("tu	[tu] <cjt> <poss 2S> DET MF S "));
 		System.out.println(new CG3WordParser()
@@ -87,9 +87,9 @@ public class CGWordParserTest_3 {
 		System.out.println("============= INTERROGATIVO ==============");
 		
 		System.out.println(new CG3WordParser()
-				.parseWord("qui�n	[qui�n] <interr> INDP MF S "));
+				.parseWord("quién	[quién] <interr> INDP MF S "));
 		System.out.println(new CG3WordParser()
-				.parseWord("cu�ntos	[cu�nto] <interr> <quant2> DET M P "));
+				.parseWord("cuántos	[cuánto] <interr> <quant2> DET M P "));
 		assertTrue(true);
 	}
 	
@@ -128,7 +128,7 @@ public class CGWordParserTest_3 {
 		System.out.println("============= ADVERBIOS ==============");
 		
 		System.out.println(new CG3WordParser()
-				.parseWord("all�	[all�] <cjt> <aloc> <atemp> <'there'> ADV "));
+				.parseWord("allá	[allá] <cjt> <aloc> <atemp> <'there'> ADV "));
 		System.out.println(new CG3WordParser()
 				.parseWord("adelante	[adelante] <cjt> <adir> <'forward'> <'ahead'> ADV "));
 		System.out.println(new CG3WordParser()
@@ -136,7 +136,7 @@ public class CGWordParserTest_3 {
 		System.out.println(new CG3WordParser()
 				.parseWord("hoy	[hoy] <cjt> <atemp> <'today'> ADV "));
 		System.out.println(new CG3WordParser()
-				.parseWord("as�	[as�] <cjt-head> <amanner> <'so'> <'thus'> <'this=way'> ADV "));
+				.parseWord("así	[así] <cjt-head> <amanner> <'so'> <'thus'> <'this=way'> ADV "));
 		System.out.println(new CG3WordParser()
 				.parseWord("seguramente	[seguramente] <cjt> <amod> <'sure'> ADV "));
 		System.out.println(new CG3WordParser()
@@ -144,7 +144,7 @@ public class CGWordParserTest_3 {
 		System.out.println(new CG3WordParser()
 				.parseWord("casi	[casi] <cjt> <aquant> <'quasi'> ADV "));
 		System.out.println(new CG3WordParser()
-				.parseWord("m�s	[m�s] <aquant> <KOMP> ADV "));
+				.parseWord("más	[más] <aquant> <KOMP> ADV "));
 		System.out.println(new CG3WordParser()
 				.parseWord("tan	[tan] <dem> <aquant> <KOMP> ADV"));
 		assertTrue(true);
@@ -159,9 +159,9 @@ public class CGWordParserTest_3 {
 		System.out.println(new CG3WordParser()
 				.parseWord("tampoco	[tampoco] <setop> <'either'> ADV "));
 		System.out.println(new CG3WordParser()
-				.parseWord("d�nde	[d�nde] <cjt-head> <interr> <aloc> <'where'> ADV "));
+				.parseWord("dónde	[dónde] <cjt-head> <interr> <aloc> <'where'> ADV "));
 		System.out.println(new CG3WordParser()
-				.parseWord("cu�ndo	[cu�ndo] <cjt> <interr> ADV "));
+				.parseWord("cuándo	[cuándo] <cjt> <interr> ADV "));
 		System.out.println(new CG3WordParser()
 				.parseWord("pues	[pues] <kc> <temp> <'then'> <'so'> ADV "));
 		assertTrue(true);

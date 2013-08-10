@@ -26,7 +26,7 @@ public class CGWordParserTest_1 {
 		System.out.println(new CG3WordParser()
 				.parseWord("avertruz	[avertruz] <heur> N M S "));
 		System.out.println(new CG3WordParser()
-				.parseWord("autom�viles	[autom�vil] <Vground> <'car'> N M P "));
+				.parseWord("automóviles	[automóvil] <Vground> <'car'> N M P "));
 		System.out.println(new CG3WordParser()
 				.parseWord("casa	[casa] <build> <'house'> N F S "));
 		assertTrue(true);
@@ -43,7 +43,7 @@ public class CGWordParserTest_1 {
 		System.out.println(new CG3WordParser()
 				.parseWord("media	[medio] <'half'> <'mid'> <'average'> ADJ F S "));
 		System.out.println(new CG3WordParser()
-				.parseWord("soper�tano	[soper�tano] <heur> ADJ M S "));
+				.parseWord("soperútano	[soperútano] <heur> ADJ M S "));
 		assertTrue(true);
 	}
 	
@@ -56,11 +56,11 @@ public class CGWordParserTest_1 {
 		System.out.println(new CG3WordParser()
 				.parseWord("saltabas	[saltar] <move> <'jump'> <mv> V IMPF 2S IND VFIN "));
 		System.out.println(new CG3WordParser()
-				.parseWord("salt�	[saltar] <move> <'jump'> <mv> V PS 3S IND VFIN"));
+				.parseWord("saltó	[saltar] <move> <'jump'> <mv> V PS 3S IND VFIN"));
 		System.out.println(new CG3WordParser()
-				.parseWord("jugar�an	[jugar] <'play'> <mv> V COND VFIN 3P "));
+				.parseWord("jugarían	[jugar] <'play'> <mv> V COND VFIN 3P "));
 		System.out.println(new CG3WordParser()
-				.parseWord("hidrolavarar�n	[hidrolavarar] <heur> <mv> V FUT 3P IND VFIN "));
+				.parseWord("hidrolavarán	[hidrolavar] <heur> <mv> V FUT 3P IND VFIN "));
 		assertTrue(true);
 	}
 	
