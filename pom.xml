@@ -25,12 +25,10 @@
 		</dependency>
 
 		<dependency>
-			<groupId>commons-graph</groupId>
-			<artifactId>commons-graph</artifactId>
-			<version>0.8.1</version>
+			<groupId>org.squadra.atenea</groupId>
+			<artifactId>AteneaBase</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
-
 
 
 	</dependencies>

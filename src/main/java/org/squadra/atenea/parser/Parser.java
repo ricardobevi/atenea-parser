@@ -1,53 +1,22 @@
 package org.squadra.atenea.parser;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
+import org.squadra.atenea.parser.connection.CG3Connection;
+import org.squadra.atenea.parser.connection.HttpCG3Connection;
 
 public class Parser {
 
-	public String parse(String input){
-		String parsedString = "";
+	public String parse(String input) {
+		String rawPreParsedSentenceString = "";
 		
-		parsedString = this.getPreParsedSentence(input);
-		
-		return parsedString;
-	}
-	
-	private String getPreParsedSentence(String inputSentence){
-		
-		String preParsedSentence = "";
-		
-		Document doc = null;
-		
-		try {
-			
-			String sentenceToParse = URLEncoder.encode(inputSentence, "UTF-8");
-		
-			doc = Jsoup.connect("http://bartgentoo.no-ip.org/parser/?input=" + sentenceToParse ).get();
-			
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		//obtengo la salida del programa para el parsing
+		CG3Connection conn = new HttpCG3Connection();
+		rawPreParsedSentenceString = conn.getPreParsedSentence(input);
+
+		SentenceParser.ParseSentence(rawPreParsedSentenceString);
 
 
-		Elements content = doc.getElementsByTag("pre");
-		
-		if ( !content.isEmpty() ){
-			
-			preParsedSentence = content.first().attr("name");
-				
-			preParsedSentence = preParsedSentence.replace("</s>", "");
-			
-		}
-		
-		return preParsedSentence;
+		return rawPreParsedSentenceString;
 	}
-	
+
+
 }
