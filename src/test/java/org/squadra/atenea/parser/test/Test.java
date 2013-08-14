@@ -1,9 +1,11 @@
 package org.squadra.atenea.parser.test;
 
 import static org.junit.Assert.*;
+import lombok.extern.log4j.Log4j;
 
 import org.squadra.atenea.parser.Parser;
 
+@Log4j
 public class Test {
 
 	@org.junit.Test
@@ -13,7 +15,8 @@ public class Test {
 
 		String sentenceToParse = "Él le pega con un palo.";
 
-		System.out.println(parser.parse(sentenceToParse));
+		log.debug("Parsed sentence: \n" + parser.parse(sentenceToParse));
+
 
 
 		assertTrue(true);

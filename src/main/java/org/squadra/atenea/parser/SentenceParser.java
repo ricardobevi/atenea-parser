@@ -1,15 +1,28 @@
 package org.squadra.atenea.parser;
 
+import lombok.extern.log4j.Log4j;
+
 import org.squadra.atenea.base.graph.Graph;
 import org.squadra.atenea.base.graph.Node;
 import org.squadra.atenea.parser.model.Sentence;
 import org.squadra.atenea.parser.model.SyntacticNode;
 
+@Log4j
 public class SentenceParser {
 
-	static public Sentence ParseSentence(String rawPreParsedSentence){
+	static public Sentence ParseSentence(String rawPreParsedSentence){	
+
+		Graph<SyntacticNode> parsingGraph = SentenceParser.getGraph( rawPreParsedSentence );					
 		
-		Sentence parsedSentence = new Sentence();
+		log.debug("Generated Graph: \n" + parsingGraph);
+		
+		Sentence parsedSentence = new Sentence(parsingGraph);
+		
+		return parsedSentence;
+	}
+	
+	
+	static private Graph<SyntacticNode> getGraph( String rawPreParsedSentence ){
 		
 		Graph<SyntacticNode> parsingGraph = new Graph<SyntacticNode>();
 		
@@ -35,10 +48,14 @@ public class SentenceParser {
 				String type = new String();
 				
 				if ( rawTypeIndex != -1 ){
-					j = rawTypeIndex;
-					while( j < rawWords[i].length() && rawWords[i].charAt(j) != ' ' &&  rawWords[i].charAt(j) != '\t' ){
+					j = rawTypeIndex + 1;
+					while( j < rawWords[i].length() && 
+						   rawWords[i].charAt(j) != ' ' &&  
+						   rawWords[i].charAt(j) != '\t' ){
+						
 						type = type + rawWords[i].charAt(j);
 						j++;
+						
 					}
 				}
 				
@@ -65,22 +82,19 @@ public class SentenceParser {
 				parsingGraph.addNode( node1, node1Index );
 				
 				parsingGraph.relate(node1Index, node2Index);
-				
+				parsingGraph.relate(node2Index, node1Index);
 				
 			
 			}
 			
 		}
 
-
-
+			
 		
-		System.out.println("##############GRAFO");
-		System.out.println(parsingGraph);
-		
-		
-		
-		return parsedSentence;
+		return parsingGraph;
 	}
+	
+	
+	
 	
 }
