@@ -25,7 +25,8 @@ public class Test {
 		log.debug("Generated Graph: \n" + sentence.getParseTree() );
 		
 		log.debug("VERB: " + sentence.getVerbs() );
-
+		
+		log.debug("ORACION: " + sentence );
 
 		assertTrue(true);
 	}

@@ -1,19 +1,24 @@
 package org.squadra.atenea.parser;
 
-import lombok.extern.log4j.Log4j;
-
 import org.squadra.atenea.base.graph.Graph;
 import org.squadra.atenea.base.graph.Node;
+import org.squadra.atenea.base.word.Word;
 import org.squadra.atenea.parser.model.Sentence;
 import org.squadra.atenea.parser.model.SyntacticNode;
 
-@Log4j
-public class SentenceParser {
+/**
+ * Esta clase se encarga de parsear la salida completa del analizador CG3.
+ * Crea un objeto Sentence que contiene un grafo de objetos Words.
+ * @author Ricardo Bevilacqua
+ * @author Leandro Morrone
+ *
+ */
+public class CG3SentenceParser {
 
 	static public Sentence ParseSentence(String rawPreParsedSentence){		
 				
-		Sentence parsedSentence = SentenceParser.getGraph( rawPreParsedSentence );
-				
+		Sentence parsedSentence = CG3SentenceParser.getGraph( rawPreParsedSentence );
+		
 		return parsedSentence;
 	}
 	
@@ -24,47 +29,46 @@ public class SentenceParser {
 		
 		String[] rawWords = rawPreParsedSentence.split("\n");
 		
-		for ( Integer i = 0 ; i < rawWords.length ; i++ ) {
+		for ( String rawWord : rawWords ) {
 			
-			if( !rawWords[i].equals("") ) { 
-				String word = new String();
+			if( !rawWord.equals("") ) { 
 				
-				Integer j = 0;
-				while( j < rawWords[i].length() && rawWords[i].charAt(j) != ' ' &&  rawWords[i].charAt(j) != '\t' ){
-					word = word + rawWords[i].charAt(j);
-					j++;
+				Integer rawTypeIndex = rawWord.lastIndexOf("@");
+				Integer rawRelationIndex = rawWord.lastIndexOf("#");
+				String rawWordTags = new String();
+				
+				// Obtengo la parte necesaria para cargar el objeto Word
+				if (rawTypeIndex != -1) {
+					rawWordTags = rawWord.substring(0, rawTypeIndex);
 				}
-		
-				Integer rawRelationIndex = rawWords[i].indexOf("#");
-				Integer rawTypeIndex = rawWords[i].indexOf("@");
-
+				else if (rawRelationIndex != -1) {
+					rawWordTags = rawWord.substring(0, rawRelationIndex);
+				}
+				else {
+					rawWordTags = rawWord;
+				}
+				
+				// Parseo los tags y obtengo el objeto Word
+				Word word = new CG3WordParser().parseWord(rawWordTags);
+				
+				
+				// Obtengo el tipo de relacion
 				String type = new String();
 				
-				if ( rawTypeIndex != -1 ){
-					j = rawTypeIndex + 1;
-					while( j < rawWords[i].length() && 
-						   rawWords[i].charAt(j) != ' ' &&  
-						   rawWords[i].charAt(j) != '\t' ){
-						
-						type = type + rawWords[i].charAt(j);
-						j++;
-						
-					}
+				if (rawTypeIndex != -1) {
+					type = rawWord.substring(rawTypeIndex + 1, rawRelationIndex - 1);
 				}
 				
-				type = type.replace("<", "");
-				type = type.replace(">", "");
-				
+				// Obtengo la relacion
 				String rawRelationString = 
-						rawWords[i].substring(rawRelationIndex + 1, 
-								              rawRelationIndex + 5);
+						rawWord.substring(rawRelationIndex + 1, rawRelationIndex + 5);
 				
 				String[] nodeAndRelation = rawRelationString.split("->");	
-				
 				
 				Integer node1Index = Integer.parseInt( nodeAndRelation[0] );
 				Integer node2Index = Integer.parseInt( nodeAndRelation[1] );
 				
+				// Creo el nuevo nodo y lo relaciono en el grafo
 				SyntacticNode node = new SyntacticNode(word, type);
 				
 				parsedSentence.relateNodes(node, node1Index, node2Index);				
@@ -72,16 +76,9 @@ public class SentenceParser {
 			}
 			
 		}
-
-			
 		
 		return parsedSentence;
 	}
-	
-	
-	
-	
-	
 	
 	
 	
@@ -122,7 +119,6 @@ public class SentenceParser {
 					rawPreParsedSentence.charAt(i) != '\n' ||
 				   rawNodeId == "") ){
 				
-			
 				//Si encuentro un @ tengo el tipo de la palabra
 				if( i < sLen && rawPreParsedSentence.charAt(i) == '@' ) {
 					
@@ -144,11 +140,8 @@ public class SentenceParser {
 						rawNodeId += rawPreParsedSentence.charAt(i);
 						i++;
 					}
-					
 				}
-				
 				i++;
-			
 			}
 			
 			
@@ -158,10 +151,8 @@ public class SentenceParser {
 			
 			Integer node1Index = Integer.parseInt( nodeAndRelation[0] );
 			Integer node2Index = Integer.parseInt( nodeAndRelation[1] );
-			
-			
 
-			Node<SyntacticNode> node1 = new Node<SyntacticNode>( new SyntacticNode(word, type) );
+			Node<SyntacticNode> node1 = new Node<SyntacticNode>( new SyntacticNode(new Word(), type) );
 
 			Node<SyntacticNode> node2 = parsingGraph.getNode(node2Index);
 			
@@ -174,7 +165,6 @@ public class SentenceParser {
 			parsingGraph.relate(node1Index, node2Index);
 			parsingGraph.relate(node2Index, node1Index);
 						
-			
 			//Limpio las variables
 			word = new String();
 			type = new String();
