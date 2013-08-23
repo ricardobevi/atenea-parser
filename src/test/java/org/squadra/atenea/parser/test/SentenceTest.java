@@ -1,24 +1,23 @@
 package org.squadra.atenea.parser.test;
 
 import static org.junit.Assert.*;
+import org.junit.Test;
 import lombok.extern.log4j.Log4j;
 
 import org.squadra.atenea.parser.Parser;
 import org.squadra.atenea.parser.model.Sentence;
 
 @Log4j
-public class Test {
+public class SentenceTest {
 
-	@org.junit.Test
+	@Test
 	public void test() {
-
-		Parser parser = new Parser();
-
-		//String sentenceToParse = "Él le pega con un palo.";
-
-		String sentenceToParse = "Él sabía que le pegaba con un palo.";
 		
-		Sentence sentence = parser.parse(sentenceToParse);
+		//String sentenceToParse = "Él le pega con un palo.";
+		//String sentenceToParse = "Él sabía que le pegaba con un palo.";
+		String sentenceToParse = "Quién era la esposa de San Martín.";
+		
+		Sentence sentence = new Parser().parse(sentenceToParse);
 		
 		//log.debug("Parsed sentence: \n" + sentence);
 		
@@ -27,6 +26,8 @@ public class Test {
 		log.debug("VERB: " + sentence.getVerbs() );
 		
 		log.debug("ORACION: " + sentence );
+		
+		log.debug("TIPO DE ORACION: " + sentence.getType() );
 
 		assertTrue(true);
 	}

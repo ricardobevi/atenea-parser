@@ -152,7 +152,7 @@ public class CG3SentenceParser {
 			Integer node1Index = Integer.parseInt( nodeAndRelation[0] );
 			Integer node2Index = Integer.parseInt( nodeAndRelation[1] );
 
-			Node<SyntacticNode> node1 = new Node<SyntacticNode>( new SyntacticNode(new Word(), type) );
+			Node<SyntacticNode> node1 = new Node<SyntacticNode>( new SyntacticNode(null, type) );
 
 			Node<SyntacticNode> node2 = parsingGraph.getNode(node2Index);
 			

@@ -13,6 +13,8 @@ import org.squadra.atenea.parser.model.Sentence;
  */
 public class Parser {
 
+	public Parser() {}
+	
 	public Sentence parse(String input) {
 		String rawPreParsedSentenceString = "";
 		

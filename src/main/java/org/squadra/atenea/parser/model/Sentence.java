@@ -8,6 +8,7 @@ import lombok.Data;
 import org.squadra.atenea.base.graph.Graph;
 import org.squadra.atenea.base.graph.Node;
 import org.squadra.atenea.base.word.Word;
+import org.squadra.atenea.base.word.WordTypes;
 
 /**
  * Clase que representa la estructura de una oracion. 
@@ -74,8 +75,20 @@ public @Data class Sentence {
 	 * Asigna un tipo a la oracion segun su contenido y lo devuelve.
 	 * @return tipo de oracion
 	 */
-	private Type getType() {
-		//TODO: asignar el tipo de oracion segun su contenido.
+	public Type getType() {
+		
+		if (type == Type.UNKNOWN) {
+			
+			// TODO: completar para los demas tipos de oracion
+			
+			for(Node<SyntacticNode> node : parseTree.getGraph().values()) {
+				if (node.getId() != 0) {
+					if (node.getData().getWord().getType() == WordTypes.Type.INTERROGATIVE) {
+						type = Type.QUESTION;
+					}
+				}
+			}
+		}
 		return type;
 	}
 	
