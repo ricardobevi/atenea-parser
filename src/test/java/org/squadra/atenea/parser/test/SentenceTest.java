@@ -15,20 +15,22 @@ public class SentenceTest {
 		
 		//String sentenceToParse = "Él le pega con un palo.";
 		//String sentenceToParse = "Él sabía que le pegaba con un palo.";
-		String sentenceToParse = "Quién era la esposa de San Martín.";
+		//String sentenceToParse = "Quién era la esposa de San Martín.";
+		//String sentenceToParse = "El hombre que estaba corriendo se murió.";
+		String sentenceToParse = "Cómo se llamaba la hija de San Martín.";
 		
 		Sentence sentence = new Parser().parse(sentenceToParse);
 		
-		//log.debug("Parsed sentence: \n" + sentence);
-		
-		log.debug("Generated Graph: \n" + sentence.getParseTree() );
-		
-		log.debug("VERB: " + sentence.getVerbs() );
+		log.debug("GRAFO: \n" + sentence.getParseTree() );
 		
 		log.debug("ORACION: " + sentence );
 		
 		log.debug("TIPO DE ORACION: " + sentence.getType() );
 
+		log.debug("SUJETO: " + sentence.getDirectObject() );
+		
+		log.debug("SUB GRAFO: " + sentence.getDirectObject().getParseTree() );
+		
 		assertTrue(true);
 	}
 	

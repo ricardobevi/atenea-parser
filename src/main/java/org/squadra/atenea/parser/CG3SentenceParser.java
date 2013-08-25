@@ -71,7 +71,7 @@ public class CG3SentenceParser {
 				// Creo el nuevo nodo y lo relaciono en el grafo
 				SyntacticNode node = new SyntacticNode(word, type);
 				
-				parsedSentence.relateNodes(node, node1Index, node2Index);				
+				parsedSentence.relateSyntacticNodes(node, node1Index, node2Index);				
 
 			}
 			
@@ -79,103 +79,6 @@ public class CG3SentenceParser {
 		
 		return parsedSentence;
 	}
-	
-	
-	
-	
-	@Deprecated
-	static private Graph<SyntacticNode> getGraph2( String rawPreParsedSentence ){
-		Graph<SyntacticNode> parsingGraph = new Graph<SyntacticNode>();
-		
-		Integer sLen = rawPreParsedSentence.length();
-		
-		Integer i = 0;
-		
-		String word = new String();
-		String type = new String();
-		String rawNodeId = new String();
-		
-		while ( i < sLen ){
-			
-			//Avanzo hasta encontrar un salto de linea
-			while ( i < sLen && 
-					rawPreParsedSentence.charAt(i) != '\n' ){
-				i++;
-			}
-			
-			i++;
-			
-			//Guardo la palabra.
-			while( i < sLen && 
-				   Character.isLetter( rawPreParsedSentence.charAt(i) )  ){
-				word += rawPreParsedSentence.charAt(i);
-				i++;
-			}
-			
-			i++;
-			
-			//Loop hasta llegar al proximo \n
-			while( i < sLen && (
-					rawPreParsedSentence.charAt(i) != '\n' ||
-				   rawNodeId == "") ){
-				
-				//Si encuentro un @ tengo el tipo de la palabra
-				if( i < sLen && rawPreParsedSentence.charAt(i) == '@' ) {
-					
-					i++;
-					while( i < sLen && 
-						   Character.isLetter( rawPreParsedSentence.charAt(i) ) &&
-						   rawPreParsedSentence.charAt(i) != '\n'){
-						type += rawPreParsedSentence.charAt(i);
-						i++;
-					}
-					
-				//Si encuentro un # tengo la union de los nodos
-				} else if(  i < sLen && rawPreParsedSentence.charAt(i) == '#'  ) {
-					
-					i++;
-					while( i < sLen && 
-						   rawPreParsedSentence.charAt(i) != ' ' &&
-						   rawPreParsedSentence.charAt(i) != '\n'){
-						rawNodeId += rawPreParsedSentence.charAt(i);
-						i++;
-					}
-				}
-				i++;
-			}
-			
-			
-			//Aca ya tengo la palabra y su clasificacion raw
-			
-			String[] nodeAndRelation = rawNodeId.split("->");
-			
-			Integer node1Index = Integer.parseInt( nodeAndRelation[0] );
-			Integer node2Index = Integer.parseInt( nodeAndRelation[1] );
-
-			Node<SyntacticNode> node1 = new Node<SyntacticNode>( new SyntacticNode(null, type) );
-
-			Node<SyntacticNode> node2 = parsingGraph.getNode(node2Index);
-			
-			if( node2 == null ){
-				parsingGraph.addNode( new Node<SyntacticNode>( new SyntacticNode() ), node2Index );
-			}
-
-			parsingGraph.addNode( node1, node1Index );
-			
-			parsingGraph.relate(node1Index, node2Index);
-			parsingGraph.relate(node2Index, node1Index);
-						
-			//Limpio las variables
-			word = new String();
-			type = new String();
-			rawNodeId = new String();
-			
-		}
-		
-		return parsingGraph;
-	}
-	
-	
 	
 	
 }
