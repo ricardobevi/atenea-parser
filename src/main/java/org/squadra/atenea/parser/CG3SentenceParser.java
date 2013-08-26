@@ -1,7 +1,5 @@
 package org.squadra.atenea.parser;
 
-import org.squadra.atenea.base.graph.Graph;
-import org.squadra.atenea.base.graph.Node;
 import org.squadra.atenea.base.word.Word;
 import org.squadra.atenea.parser.model.Sentence;
 import org.squadra.atenea.parser.model.SyntacticNode;
@@ -61,7 +59,7 @@ public class CG3SentenceParser {
 				
 				// Obtengo la relacion
 				String rawRelationString = 
-						rawWord.substring(rawRelationIndex + 1, rawRelationIndex + 5);
+						rawWord.substring(rawRelationIndex + 1, rawWord.length());
 				
 				String[] nodeAndRelation = rawRelationString.split("->");	
 				

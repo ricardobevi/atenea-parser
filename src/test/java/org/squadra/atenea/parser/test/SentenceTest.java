@@ -15,9 +15,9 @@ public class SentenceTest {
 		
 		//String sentenceToParse = "Él le pega con un palo.";
 		//String sentenceToParse = "Él sabía que le pegaba con un palo.";
-		//String sentenceToParse = "Quién era la esposa de San Martín.";
+		String sentenceToParse = "Yo le entregué un libro y le saqué un premio.";
 		//String sentenceToParse = "El hombre que estaba corriendo se murió.";
-		String sentenceToParse = "Cómo se llamaba la hija de San Martín.";
+		//String sentenceToParse = "Cómo se llamaba la hija de San Martín.";
 		
 		Sentence sentence = new Parser().parse(sentenceToParse);
 		
@@ -29,7 +29,8 @@ public class SentenceTest {
 
 		log.debug("SUJETO: " + sentence.getDirectObject() );
 		
-		log.debug("SUB GRAFO: " + sentence.getDirectObject().getParseTree() );
+		log.debug("SUB GRAFO: \n" + sentence.getDirectObject().getParseTree() );
+		log.debug("SUB GRAFO: \n" + sentence.getSubject().getParseTree() );
 		
 		assertTrue(true);
 	}

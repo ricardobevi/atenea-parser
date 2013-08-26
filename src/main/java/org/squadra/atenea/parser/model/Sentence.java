@@ -34,7 +34,7 @@ public class Sentence {
 		ASSERTION, QUESTION, INTERJECTION, ORDER, UNKNOWN,
 		
 		// Utilizados para las sub-oraciones (estructuras sintacticaas)
-		SUBJECT, DIRECT_OBJECT, INDIRECT_OBJECT, INTERROGATIVE, VERB
+		SUBJECT, DIRECT_OBJECT, INDIRECT_OBJECT, INTERROGATIVE, MAIN_VERB
 	}
 	
 	
@@ -144,11 +144,20 @@ public class Sentence {
 		subSentence.setType(Type.DIRECT_OBJECT);
 		return subSentence;
 	}
+	
+	/**
+	 * Devuelve el objeto indirecto de la oracion.
+	 * @return Sub-oracion con el objeto indirecto
+	 */
+	public Sentence getIndirectObject() {
+		Sentence subSentence = getSubSentence("DAT");
+		subSentence.setType(Type.INDIRECT_OBJECT);
+		return subSentence;
+	}
 
 	/**
-	 * Realiza una busqueda por niveles en el arbol de parsing hasta encontrar
-	 * el tipo de nodo buscado y retorna el subarbol en forma de Sentence cuyo 
-	 * nodo raiz es el encontrado.
+	 * Realiza una busqueda por niveles en el arbol de parsing de un tipo de nodo.
+	 * Por cada match del tipo 
 	 * @param nodeType Tipo de nodo (SUBJ, ACC, FS*, DAT, etc).
 	 * @return Subarbol en forma de Sentence.
 	 */
@@ -164,12 +173,10 @@ public class Sentence {
 			for (Node<SyntacticNode> node : nodes) {
 				if (node.getData().getType().contains(nodeType)) {
 					
-					subSentence.parseTree = parseTree.subGraph(node.getId());
+					subSentence.parseTree.addSubGraph(
+							parseTree.subGraph(node.getId()), node.getId(), 0);
 					
-					Node<SyntacticNode> node0 = new Node<SyntacticNode>(new SyntacticNode());
-					subSentence.parseTree.addNode(node0, 0);
-					subSentence.parseTree.relate(node.getId(), 0);
-					
+					// Comentar este return para devolver todos los subgrafos.
 					return subSentence;
 				}
 			}
