@@ -34,7 +34,7 @@ public class Sentence {
 		ASSERTION, QUESTION, INTERJECTION, ORDER, UNKNOWN,
 		
 		// Utilizados para las sub-oraciones (estructuras sintacticaas)
-		SUBJECT, DIRECT_OBJECT, INDIRECT_OBJECT, INTERROGATIVE, MAIN_VERB
+		SUBJECT, DIRECT_OBJECT, INDIRECT_OBJECT, INTERROGATIVE, VERB
 	}
 	
 	
@@ -130,8 +130,48 @@ public class Sentence {
 	 * @return Sub-oracion con el sujeto
 	 */
 	public Sentence getSubject() {
-		Sentence subSentence = getSubSentence("SUBJ");
+		Sentence subSentence = getSubSentence(".*SUBJ.*");
 		subSentence.setType(Type.SUBJECT);
+		return subSentence;
+	}
+	
+	/**
+	 * Devuelve el verbo de la oracion.
+	 * @return Sub-oracion con el verbo
+	 */
+	public Sentence getVerb() {
+		Sentence subSentence = new Sentence();
+		
+		ArrayList<Node<SyntacticNode>> verbs = 
+				getSyntacticNodeByType(".*FS.*|.*ICL.*(?!(AUX|SC)).*");
+		
+		if (verbs.size() > 0) {
+			
+			// Agrego el primer verbo encontrado
+			subSentence.relateSyntacticNodes(
+					verbs.get(0).getData(), verbs.get(0).getId(), 0);
+			
+			// Busco si se relaciona con algun auxiliar
+			for (Node<SyntacticNode> node1 : parseTree.getRelatedNodes(verbs.get(0).getId())) {
+				if (node1.getData().getType().matches(".*ICL.*(AUX|SC).*")) {
+					
+					// Agrego el segundo verbo
+					subSentence.relateSyntacticNodes(
+							node1.getData(), node1.getId(), verbs.get(0).getId());
+					
+					// Busco si se relaciona con otro auxiliar
+					for (Node<SyntacticNode> node2 : parseTree.getRelatedNodes(node1.getId())) {
+						if (node2.getData().getType().matches(".*ICL.*(AUX|SC).*")) {
+							
+							// Agrego el tercer verbo
+							subSentence.relateSyntacticNodes(
+									node2.getData(), node2.getId(), node1.getId());
+						}
+					}
+				}
+			}
+		}
+		subSentence.setType(Type.VERB);
 		return subSentence;
 	}
 	
@@ -140,7 +180,7 @@ public class Sentence {
 	 * @return Sub-oracion con el objeto directo
 	 */
 	public Sentence getDirectObject() {
-		Sentence subSentence = getSubSentence("ACC");
+		Sentence subSentence = getSubSentence(".*ACC.*");
 		subSentence.setType(Type.DIRECT_OBJECT);
 		return subSentence;
 	}
@@ -150,15 +190,16 @@ public class Sentence {
 	 * @return Sub-oracion con el objeto indirecto
 	 */
 	public Sentence getIndirectObject() {
-		Sentence subSentence = getSubSentence("DAT");
+		Sentence subSentence = getSubSentence(".*DAT.*");
 		subSentence.setType(Type.INDIRECT_OBJECT);
 		return subSentence;
 	}
 
+	
 	/**
 	 * Realiza una busqueda por niveles en el arbol de parsing de un tipo de nodo.
-	 * Por cada match del tipo 
-	 * @param nodeType Tipo de nodo (SUBJ, ACC, FS*, DAT, etc).
+	 * Devuelve una Sentence con el subarbol.
+	 * @param nodeType Expresion regular del tipo de nodo (ej: .*SUBJ.* FS.*)
 	 * @return Subarbol en forma de Sentence.
 	 */
 	private Sentence getSubSentence(String nodeType) {
@@ -166,25 +207,75 @@ public class Sentence {
 		Sentence subSentence = new Sentence();
 		
 		int currentDistance = 1;
-		ArrayList<Node<SyntacticNode>> nodes = parseTree.getNodesByDistance(currentDistance);
+		ArrayList<Node<SyntacticNode>> nodes = parseTree.getNodesByDistanceToRoot(currentDistance);
 		
 		while (nodes.size() > 0) {
 			
 			for (Node<SyntacticNode> node : nodes) {
-				if (node.getData().getType().contains(nodeType)) {
+				if (node.getData().getType().matches(nodeType)) {
 					
 					subSentence.parseTree.addSubGraph(
 							parseTree.subGraph(node.getId()), node.getId(), 0);
 					
-					// Comentar este return para devolver todos los subgrafos.
 					return subSentence;
 				}
 			}
 			currentDistance++;
-			nodes = parseTree.getNodesByDistance(currentDistance);
+			nodes = parseTree.getNodesByDistanceToRoot(currentDistance);
 		}
 		
 		return subSentence;
+	}
+	
+	/**
+	 * Realiza una busqueda por niveles en el arbol de parsing de un tipo de nodo.
+	 * Devuelve una lista de Sentences con cada subarbol encontrado.
+	 * @param nodeType Expresion regular del tipo de nodo (ej: .*SUBJ.* FS.*)
+	 * @return Listado de subarboles en forma de Sentence.
+	 */
+	private ArrayList<Sentence> getSubSentences(String nodeType) {
+		
+		ArrayList<Sentence> subSentences = new ArrayList<Sentence>();
+		
+		int currentDistance = 1;
+		ArrayList<Node<SyntacticNode>> nodes = parseTree.getNodesByDistanceToRoot(currentDistance);
+		
+		while (nodes.size() > 0) {
+			
+			for (Node<SyntacticNode> node : nodes) {
+				if (node.getData().getType().matches(nodeType)) {
+					
+					Sentence subSentence = new Sentence();
+					
+					subSentence.parseTree.addSubGraph(
+							parseTree.subGraph(node.getId()), node.getId(), 0);
+					
+					subSentences.add(subSentence);
+				}
+			}
+			currentDistance++;
+			nodes = parseTree.getNodesByDistanceToRoot(currentDistance);
+		}
+		
+		return subSentences;
+	}
+	
+	
+	/**
+	 * Realiza una busqueda en el arbol de parsing y devuelve un conjunto de
+	 * nodos con el tipo indicado.
+	 * @param nodeType Expresion regular del tipo de nodo (ej: .*SUBJ.* FS.*)
+	 * @return Listado de nodos sintacticos que coinciden con el tipo indicado.
+	 */
+	private ArrayList<Node<SyntacticNode>> getSyntacticNodeByType(String nodeType) {
+		ArrayList<Node<SyntacticNode>> nodes = new ArrayList<Node<SyntacticNode>>();
+		
+		for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
+			if (node.getData().getType().matches(nodeType)) {
+				nodes.add(node);
+			}
+		}
+		return nodes;
 	}
 	
 	

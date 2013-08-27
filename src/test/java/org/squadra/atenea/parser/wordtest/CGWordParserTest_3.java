@@ -147,6 +147,12 @@ public class CGWordParserTest_3 {
 				.parseWord("más	[más] <aquant> <KOMP> ADV "));
 		System.out.println(new CG3WordParser()
 				.parseWord("tan	[tan] <dem> <aquant> <KOMP> ADV"));
+		System.out.println(new CG3WordParser()
+				.parseWord("sí	[sí] ADV @ADVL "));
+		System.out.println(new CG3WordParser()
+				.parseWord("tampoco	[tampoco] <setop> <'either'> ADV "));
+		System.out.println(new CG3WordParser()
+				.parseWord("Tal=vez	[tal=vez] <*> <'perhaps'> ADV "));
 		assertTrue(true);
 	}
 	

@@ -15,9 +15,13 @@ public class SentenceTest {
 		
 		//String sentenceToParse = "Él le pega con un palo.";
 		//String sentenceToParse = "Él sabía que le pegaba con un palo.";
-		String sentenceToParse = "Yo le entregué un libro y le saqué un premio.";
+		//String sentenceToParse = "Yo le entregué un libro y le saqué un premio.";
 		//String sentenceToParse = "El hombre que estaba corriendo se murió.";
 		//String sentenceToParse = "Cómo se llamaba la hija de San Martín.";
+		//String sentenceToParse = "Me quiero ir.";
+		//String sentenceToParse = "Yo había estado jugando a la playstation.";
+		//String sentenceToParse = "Abrir la cartera y cerrandola.";
+		String sentenceToParse = "Yo no jugué a eso.";
 		
 		Sentence sentence = new Parser().parse(sentenceToParse);
 		
@@ -26,11 +30,10 @@ public class SentenceTest {
 		log.debug("ORACION: " + sentence );
 		
 		log.debug("TIPO DE ORACION: " + sentence.getType() );
-
-		log.debug("SUJETO: " + sentence.getDirectObject() );
 		
-		log.debug("SUB GRAFO: \n" + sentence.getDirectObject().getParseTree() );
-		log.debug("SUB GRAFO: \n" + sentence.getSubject().getParseTree() );
+		log.debug("SUB GRAFO OBJETO DIRECTO: \n" + sentence.getDirectObject().getParseTree() );
+		log.debug("SUB GRAFO SUJETO: \n" + sentence.getSubject().getParseTree() );
+		log.debug("SUB GRAFO VERBOS: \n" + sentence.getVerb().getParseTree() );
 		
 		assertTrue(true);
 	}

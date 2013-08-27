@@ -454,7 +454,16 @@ public class CG3WordParser {
 				break;
 			default:
 				type = WordTypes.Type.ADVERB;
-				if (name.matches(".*mente$")) {
+				if (baseWord.matches("no|tampoco")) {
+					subType = WordTypes.Type.AdverbSubtype.NEGATION;
+				}
+				else if (baseWord.matches("sí|también")) {
+					subType = WordTypes.Type.AdverbSubtype.AFFIRMATION;
+				}
+				else if (baseWord.matches("quizá|quizás|acaso|tal=vez|probablemente|posiblemente")) {
+					subType = WordTypes.Type.AdverbSubtype.DOUBT;
+				}
+				else if (name.matches(".*mente$")) {
 					subType = WordTypes.Type.AdverbSubtype.MODE;
 				}
 				else {
