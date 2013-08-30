@@ -19,9 +19,9 @@ public class SentenceTest {
 		//String sentenceToParse = "El hombre que estaba corriendo se murió.";
 		//String sentenceToParse = "Cómo se llamaba la hija de San Martín.";
 		//String sentenceToParse = "Me quiero ir.";
-		//String sentenceToParse = "Yo había estado jugando a la playstation.";
+		String sentenceToParse = "El niño malo no podría haber estado jugando a la play y a las cartas de Jhon.";
 		//String sentenceToParse = "Abrir la cartera y cerrandola.";
-		String sentenceToParse = "Yo no jugué a eso.";
+		//String sentenceToParse = "Yo no jugué a eso.";
 		
 		Sentence sentence = new Parser().parse(sentenceToParse);
 		
@@ -31,9 +31,15 @@ public class SentenceTest {
 		
 		log.debug("TIPO DE ORACION: " + sentence.getType() );
 		
-		log.debug("SUB GRAFO OBJETO DIRECTO: \n" + sentence.getDirectObject().getParseTree() );
-		log.debug("SUB GRAFO SUJETO: \n" + sentence.getSubject().getParseTree() );
-		log.debug("SUB GRAFO VERBOS: \n" + sentence.getVerb().getParseTree() );
+		log.debug("SUB GRAFO OBJETO DIRECTO: \n" + sentence.getDirectObject().get(0).getParseTree() );
+		log.debug("SUB GRAFO SUJETO: \n" + sentence.getSubjects().get(0).getParseTree() );
+		log.debug("SUB GRAFO VERBOS: \n" + sentence.getVerbs().get(0).getParseTree() );
+		
+		log.debug("SUSTANTIVOS: \n" + sentence.getNouns() );
+		log.debug("VERBOS PRINCIPALES: \n" + sentence.getVerbs().get(0).getMainVerbs() );
+		log.debug("ADJETIVOS: \n" + sentence.getSubjects().get(0).getAdjectives() );
+		
+		log.debug("NEGACION: " + sentence.getVerbs().get(0).isNegation() );
 		
 		assertTrue(true);
 	}

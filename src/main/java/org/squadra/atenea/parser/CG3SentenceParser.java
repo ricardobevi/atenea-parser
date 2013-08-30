@@ -1,6 +1,7 @@
 package org.squadra.atenea.parser;
 
 import org.squadra.atenea.base.word.Word;
+import org.squadra.atenea.base.word.WordTypes;
 import org.squadra.atenea.parser.model.Sentence;
 import org.squadra.atenea.parser.model.SyntacticNode;
 
@@ -55,6 +56,16 @@ public class CG3SentenceParser {
 				
 				if (rawTypeIndex != -1) {
 					type = rawWord.substring(rawTypeIndex + 1, rawRelationIndex - 1);
+				}
+				
+				// Si es un verbo, agrego al tipo si actua como principal o auxiliar
+				if (word.getType() == WordTypes.Type.VERB &&
+					rawWordTags.contains("<mv>")) {
+					type += "(mv)";
+				}
+				if (word.getType() == WordTypes.Type.VERB &&
+					rawWordTags.contains("<aux>")) {
+					type += "(aux)";
 				}
 				
 				// Obtengo la relacion

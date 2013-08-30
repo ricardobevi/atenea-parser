@@ -44,9 +44,19 @@ public class Sentence {
 	 */
 	public Sentence() {
 		this.parseTree = new Graph<SyntacticNode>();
-		Node<SyntacticNode> node0 = new Node<SyntacticNode>(new SyntacticNode());
-		this.parseTree.addNode(node0, 0);
+		this.parseTree.addNode(new Node<SyntacticNode>(new SyntacticNode()), 0);
 		this.type = Type.UNKNOWN;
+	}
+	
+	/**
+	 * Constructor parametrizado por tipo.
+	 * Inicializa las variables y crea el nodo 0.
+	 * @param type Tipo de oracion.
+	 */
+	public Sentence(Type type) {
+		this.parseTree = new Graph<SyntacticNode>();
+		this.parseTree.addNode(new Node<SyntacticNode>(new SyntacticNode()), 0);
+		this.type = type;
 	}
 
 	
@@ -85,7 +95,7 @@ public class Sentence {
 	 */
 	public Type getType() {
 		if (type == Type.UNKNOWN) {
-			calculateType();
+			assignType();
 		}
 		return type;
 	}
@@ -95,14 +105,43 @@ public class Sentence {
 	 * Asigna un tipo a la oracion segun su contenido y lo devuelve.
 	 * @return tipo de oracion
 	 */
-	private Type calculateType() {
+	private Type assignType() {
 		
-		// TODO: completar para los demas tipos de oracion
-		
-		for(Node<SyntacticNode> node : parseTree.getGraph().values()) {
+		for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
 			if (node.getId() != 0) {
-				if (node.getData().getWord().getType() == WordTypes.Type.INTERROGATIVE) {
+				
+				/*
+				 * TODO: Falta mejorar el reconocimiento de ORDENES con imperativos,
+				 * de AFIRMACIONES y resolver el tema de las INTERJECCIONES (si las
+				 * vamos a cargar a mano aca, o se hace antes del parsing).
+				 */
+				
+				// Si uno de los nodos es de tipo QUESTION o la palabra es
+				// un pronombre INTERROGATIVO, entonces es una pregunta.
+				
+				if (node.getData().getWord().getType() == WordTypes.Type.INTERROGATIVE
+					|| node.getData().getType().matches(".*FS-QUE.*")) {
 					type = Type.QUESTION;
+				}
+				
+				// Si uno de los nodos es de tipo COMMAND o la palabra es
+				// un verbo en modo IMPERATIVO, entonces es una orden.
+				
+				if (node.getData().getWord().getMode() == WordTypes.Mode.IMPERATIVE
+					|| node.getData().getType().matches(".*FS-COM.*")) {
+					type = Type.ORDER;
+				}
+				
+				// Si una de las palabras es una INTERJECTION, entonces es
+				// una interjeccion.
+				
+				else if (node.getData().getWord().getType() == WordTypes.Type.INTERJECTION) {
+					type = Type.INTERJECTION;
+				}
+				
+				// Si no es pregunta, orden ni interjeccion, entonces es afirmacion
+				else {
+					type = Type.ASSERTION;
 				}
 			}
 		}
@@ -129,70 +168,140 @@ public class Sentence {
 	 * Devuelve el sujeto de la oracion.
 	 * @return Sub-oracion con el sujeto
 	 */
-	public Sentence getSubject() {
-		Sentence subSentence = getSubSentence(".*SUBJ.*");
-		subSentence.setType(Type.SUBJECT);
-		return subSentence;
+	public ArrayList<Sentence> getSubjects() {
+		ArrayList<Sentence> subSentences = getSubSentences(".*SUBJ.*", Type.SUBJECT);
+		return subSentences;
 	}
 	
 	/**
 	 * Devuelve el verbo de la oracion.
 	 * @return Sub-oracion con el verbo
 	 */
-	public Sentence getVerb() {
-		Sentence subSentence = new Sentence();
+	public ArrayList<Sentence> getVerbs() {
+		ArrayList<Sentence> subSentences = new ArrayList<Sentence>();
 		
 		ArrayList<Node<SyntacticNode>> verbs = 
 				getSyntacticNodeByType(".*FS.*|.*ICL.*(?!(AUX|SC)).*");
 		
-		if (verbs.size() > 0) {
+		for (Node<SyntacticNode> node : verbs) {
+			
+			Sentence subSentence = new Sentence(Type.VERB);
 			
 			// Agrego el primer verbo encontrado
-			subSentence.relateSyntacticNodes(
-					verbs.get(0).getData(), verbs.get(0).getId(), 0);
+			subSentence.relateSyntacticNodes(node.getData(), node.getId(), 0);
 			
-			// Busco si se relaciona con algun auxiliar
-			for (Node<SyntacticNode> node1 : parseTree.getRelatedNodes(verbs.get(0).getId())) {
-				if (node1.getData().getType().matches(".*ICL.*(AUX|SC).*")) {
-					
-					// Agrego el segundo verbo
-					subSentence.relateSyntacticNodes(
-							node1.getData(), node1.getId(), verbs.get(0).getId());
-					
-					// Busco si se relaciona con otro auxiliar
-					for (Node<SyntacticNode> node2 : parseTree.getRelatedNodes(node1.getId())) {
-						if (node2.getData().getType().matches(".*ICL.*(AUX|SC).*")) {
-							
-							// Agrego el tercer verbo
-							subSentence.relateSyntacticNodes(
-									node2.getData(), node2.getId(), node1.getId());
-						}
-					}
-				}
+			// Agrego los verbos auxiliares y la negacion si existen
+			addNegationAndAuxiliarVerbs(node, subSentence);
+			
+			subSentences.add(subSentence);
+		}
+		return subSentences;
+	}
+	
+	private void addNegationAndAuxiliarVerbs(Node<SyntacticNode> verb, Sentence subSentence) {
+		
+		// Busco los nodos que se relacionan con el verbo
+		for (Node<SyntacticNode> node : parseTree.getRelatedNodes(verb.getId())) {
+			if (node.getData().getType().matches(".*ICL.*(AUX|SC).*")) {
+				
+				// Si hay un segundo verbo, lo relaciono al anterior
+				subSentence.relateSyntacticNodes(
+						node.getData(), node.getId(), verb.getId());
+				
+				// Llamo a la recursividad por si existen mas verbos
+				addNegationAndAuxiliarVerbs(node, subSentence);
+			}
+			
+			if (node.getData().getWord().getSubType() == 
+					WordTypes.Type.AdverbSubtype.NEGATION) {
+				
+				// Si el verbo esta negado, agreo la negacion
+				subSentence.relateSyntacticNodes(
+						node.getData(), node.getId(), verb.getId());
 			}
 		}
-		subSentence.setType(Type.VERB);
-		return subSentence;
 	}
+	
 	
 	/**
 	 * Devuelve el objeto directo de la oracion.
 	 * @return Sub-oracion con el objeto directo
 	 */
-	public Sentence getDirectObject() {
-		Sentence subSentence = getSubSentence(".*ACC.*");
-		subSentence.setType(Type.DIRECT_OBJECT);
-		return subSentence;
+	public ArrayList<Sentence> getDirectObject() {
+		ArrayList<Sentence> subSentences = getSubSentences(".*ACC.*", Type.DIRECT_OBJECT);
+		return subSentences;
 	}
 	
 	/**
 	 * Devuelve el objeto indirecto de la oracion.
 	 * @return Sub-oracion con el objeto indirecto
 	 */
-	public Sentence getIndirectObject() {
-		Sentence subSentence = getSubSentence(".*DAT.*");
-		subSentence.setType(Type.INDIRECT_OBJECT);
-		return subSentence;
+	public ArrayList<Sentence> getIndirectObject() {
+		ArrayList<Sentence> subSentences = getSubSentences(".*DAT.*", Type.INDIRECT_OBJECT);
+		return subSentences;
+	}
+	
+	/**
+	 * Devuelve una lista de sustantivos (comunes y propios).
+	 * @return Lista de Words sustantivos
+	 */
+	public ArrayList<Word> getNouns() {
+		ArrayList<Word> nouns = new ArrayList<Word>();
+		
+		for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
+			if (node.getData().getWord().getType() == WordTypes.Type.NOUN ||
+				node.getData().getWord().getType() == WordTypes.Type.PROPER_NAME) {
+				
+				nouns.add(node.getData().getWord());
+			}
+		}
+		return nouns;
+	}
+	
+	/**
+	 * Devuelve una lista de adjetivos.
+	 * @return Lista de Words adjetivos
+	 */
+	public ArrayList<Word> getAdjectives() {
+		ArrayList<Word> nouns = new ArrayList<Word>();
+		
+		for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
+			if (node.getData().getWord().getType() == WordTypes.Type.ADJECTIVE) {
+				
+				nouns.add(node.getData().getWord());
+			}
+		}
+		return nouns;
+	}
+	
+	/**
+	 * Devuelve una lista de los verbos principales.
+	 * @return Lista de Words que son verbos principales
+	 */
+	public ArrayList<Word> getMainVerbs() {
+		ArrayList<Word> mainVerbs = new ArrayList<Word>();
+		
+		for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
+			if (node.getData().getType().matches(".*(FS|ICL).*mv.*")) {
+				mainVerbs.add(node.getData().getWord());
+			}
+		}
+		return mainVerbs;
+	}
+	
+	/**
+	 * Indica si el verbo esta negado o es una afirmacion.
+	 * Se recomienda su uso luego del getVerbs().
+	 * @return true si es una negacion, false si es afirmacion.
+	 */
+	public boolean isNegation() {
+		for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
+			if (node.getData().getWord().getSubType() == 
+					WordTypes.Type.AdverbSubtype.NEGATION) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	
@@ -202,9 +311,10 @@ public class Sentence {
 	 * @param nodeType Expresion regular del tipo de nodo (ej: .*SUBJ.* FS.*)
 	 * @return Subarbol en forma de Sentence.
 	 */
-	private Sentence getSubSentence(String nodeType) {
+	@SuppressWarnings("unused")
+	private Sentence getSubSentence(String nodeType, Type subSentenceType) {
 		
-		Sentence subSentence = new Sentence();
+		Sentence subSentence = new Sentence(subSentenceType);
 		
 		int currentDistance = 1;
 		ArrayList<Node<SyntacticNode>> nodes = parseTree.getNodesByDistanceToRoot(currentDistance);
@@ -233,7 +343,7 @@ public class Sentence {
 	 * @param nodeType Expresion regular del tipo de nodo (ej: .*SUBJ.* FS.*)
 	 * @return Listado de subarboles en forma de Sentence.
 	 */
-	private ArrayList<Sentence> getSubSentences(String nodeType) {
+	private ArrayList<Sentence> getSubSentences(String nodeType, Type subSentenceType) {
 		
 		ArrayList<Sentence> subSentences = new ArrayList<Sentence>();
 		
@@ -245,7 +355,7 @@ public class Sentence {
 			for (Node<SyntacticNode> node : nodes) {
 				if (node.getData().getType().matches(nodeType)) {
 					
-					Sentence subSentence = new Sentence();
+					Sentence subSentence = new Sentence(subSentenceType);
 					
 					subSentence.parseTree.addSubGraph(
 							parseTree.subGraph(node.getId()), node.getId(), 0);
