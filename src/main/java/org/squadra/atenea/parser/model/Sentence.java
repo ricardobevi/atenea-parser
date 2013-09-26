@@ -303,6 +303,21 @@ public class Sentence {
 		}
 		return false;
 	}
+	
+	/**
+	 * Devuelve una lista con las palabras interrogativas.
+	 * @return Lista de Words que son interrogativas
+	 */
+	public ArrayList<Word> getQuestionWords() {
+		ArrayList<Word> questionWords = new ArrayList<Word>();
+		
+		for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
+			if (node.getData().getWord().getType() == WordTypes.Type.INTERROGATIVE) {
+				questionWords.add(node.getData().getWord());
+			}
+		}
+		return questionWords;
+	}
 
 	
 	/**
