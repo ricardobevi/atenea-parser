@@ -3,10 +3,13 @@ package org.squadra.atenea.parser.connection;
 import java.io.IOException;
 import java.net.URLEncoder;
 
+import lombok.extern.log4j.Log4j;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+@Log4j
 public class HttpCG3Connection implements CG3Connection {
 
 	@Override
@@ -22,21 +25,18 @@ public class HttpCG3Connection implements CG3Connection {
 
 			doc = Jsoup.connect(
 					"http://bartgentoo.no-ip.org/parser/?input="
-							+ sentenceToParse).get();
+							+ sentenceToParse).timeout(5000).get();
 
+			Elements content = doc.getElementsByTag("pre");
+
+			if (!content.isEmpty()) {
+				preParsedSentence = content.first().attr("name");
+				preParsedSentence = preParsedSentence.replace("</s>", "");
+			}
+			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			log.error("Timeout conectando con la gramatica");
 			e.printStackTrace();
-		}
-
-		Elements content = doc.getElementsByTag("pre");
-
-		if (!content.isEmpty()) {
-
-			preParsedSentence = content.first().attr("name");
-
-			preParsedSentence = preParsedSentence.replace("</s>", "");
-
 		}
 
 		return preParsedSentence;

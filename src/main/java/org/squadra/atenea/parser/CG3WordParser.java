@@ -64,7 +64,7 @@ public class CG3WordParser {
 	 * @param cgWord Cadena obtenida del analizador CG3
 	 */
 	private void setNumberFields(String cgWord) {
-		name = cgWord.substring(0, cgWord.indexOf(" ") - 1);
+		name = cgWord.substring(0, cgWord.indexOf(" ") - 1).replaceAll("=", " ");
 		baseWord = name;
 		type = WordTypes.Type.NUMERIC;
 		gender = WordTypes.Gender.NEUTRAL;
@@ -76,8 +76,8 @@ public class CG3WordParser {
 	 * @param cgWord Cadena obtenida del analizador CG3
 	 */
 	private void setWordFields(String cgWord) {
-		name = getName(cgWord);
-		baseWord = getBaseWord(cgWord);
+		name = getName(cgWord).replaceAll("=", " ");
+		baseWord = getBaseWord(cgWord).replaceAll("=", " ");
 		String[] lexicalTags = getLexicalTags(cgWord);
 		String[] syntacticTags = getSyntacticTags(cgWord);
 		setHeuristic(syntacticTags);
