@@ -172,4 +172,17 @@ public class CGWordParserTest_3 {
 				.parseWord("pues	[pues] <kc> <temp> <'then'> <'so'> ADV "));
 		assertTrue(true);
 	}
+	
+	@Test
+	public void contractions() {
+		System.out.println("============== CONTRACCIONES ===============");
+		
+		System.out.println(new CG3WordParser()
+				.parseWord("tomar	[tomar] <sam1> <'take'> <mv> V INF "));
+		System.out.println(new CG3WordParser()
+				.parseWord("me	[yo] <sam2> PERS MF 1S ACC/DAT "));
+		System.out.println(new CG3WordParser()
+				.parseWord("lo	[lo] <sam3> PERS M 3S ACC "));
+		assertTrue(true);
+	}
 }

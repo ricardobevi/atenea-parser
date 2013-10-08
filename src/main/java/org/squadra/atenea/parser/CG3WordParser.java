@@ -22,6 +22,7 @@ public class CG3WordParser {
 	private String tense 	= WordTypes.VOID;
 	private String person 	= WordTypes.VOID;
 	private boolean heuristic = false;
+	private Integer contraction = 0;
 	
 	/**
 	 * Constructor
@@ -45,7 +46,7 @@ public class CG3WordParser {
 			setWordFields(cgWord);
 		}
 		return new Word(name, baseWord, type, subType, gender, number, 
-				mode, tense, person, heuristic);
+				mode, tense, person, heuristic, contraction);
 	}
 	
 
@@ -81,6 +82,7 @@ public class CG3WordParser {
 		String[] lexicalTags = getLexicalTags(cgWord);
 		String[] syntacticTags = getSyntacticTags(cgWord);
 		setHeuristic(syntacticTags);
+		setContraction(syntacticTags);
 		
 		System.out.println(
 				Arrays.asList(lexicalTags) + " " + Arrays.asList(syntacticTags));
@@ -483,6 +485,20 @@ public class CG3WordParser {
 	private void setHeuristic(String[] syntacticTags) {
 		heuristic = Arrays.asList(syntacticTags).contains("heur") ||
 					Arrays.asList(syntacticTags).contains("heurtag");
+	}
+	
+	/**
+	 * Si la palabra forma parte de una contraccion, guarda el numero de orden.
+	 * @param syntacticTags
+	 */
+	private void setContraction(String[] syntacticTags) {
+		if (Arrays.asList(syntacticTags).contains("sam1")) {
+			contraction = 1;
+		} else if (Arrays.asList(syntacticTags).contains("sam2")) {
+			contraction = 2;
+		} else if (Arrays.asList(syntacticTags).contains("sam3")) {
+			contraction = 3;
+		}
 	}
 	
 	/**

@@ -151,14 +151,61 @@ public class Sentence {
 
 	/**
 	 * Devuelve la oracion en forma de lista de Words
+	 * @param contracted Si es false devuelve todas las palabras que devuelve
+	 * la gramatica; si es true unifica las contracciones en una sola palabra
+	 * (por ejemplo, "a el" -> "al", "jugar me" -> "jugarme".
+	 * PARA INSERTAR NODOS EN LA BASE DE DATOS USAR CONTRACTION=TRUE.
 	 * @return Lista de palabras (objetos Word) ordenados
 	 */
-	public ArrayList<Word> getAllWords() {
+	public ArrayList<Word> getAllWords(boolean contracted) {
+		
 		ArrayList<Word> words = new ArrayList<Word>();
 		
-		for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
-			if (node.getId() != 0) {
-				words.add(node.getData().getWord());
+		if (contracted) {
+			
+			int lastContraction = 0;
+			ArrayList<Word> wordsToContract = new ArrayList<Word>();
+			
+	 		for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
+				if (node.getId() != 0) {
+					
+					int contraction = node.getData().getWord().getContraction();
+					
+					// Si termina una secuencia de palabras a contraer
+					if (contraction <= lastContraction && lastContraction >= 2) {
+						
+						// Contraigo las palabras almacenadas en la lista
+						String newName = "";
+						for (Word word : wordsToContract) {
+							newName += word.getName();
+						}
+						if (newName.toLowerCase().matches("ael|deel")) {
+							System.out.println("MATCH");
+							newName = newName.replaceFirst("e|E", "");
+						}
+						wordsToContract.get(0).setName(newName);
+						words.add(wordsToContract.get(0));
+						wordsToContract.clear();
+					}
+					
+					// Si la palabra forma parte de una contraccion la guardo en
+					// una lista temporal.
+					if (contraction > 0) {
+						wordsToContract.add(node.getData().getWord());
+					}
+					// Sino, la guardo en la lista de palabras a devolver
+					else {
+						words.add(node.getData().getWord());
+					}
+					lastContraction = contraction;
+				}
+			}
+		}
+		else {
+	 		for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
+				if (node.getId() != 0) {
+					words.add(node.getData().getWord());
+				}
 			}
 		}
 		return words;
