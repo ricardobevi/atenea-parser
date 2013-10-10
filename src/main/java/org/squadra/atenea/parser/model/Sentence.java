@@ -25,7 +25,7 @@ public class Sentence {
 	private @Getter @Setter Graph<SyntacticNode> parseTree;
 	
 	/** Tipo de oracion */
-	private @Setter Type type;
+	private @Getter @Setter Type type;
 	
 	/** Tipos de oracion o estructura sintactica */
 	public enum Type {
@@ -86,66 +86,6 @@ public class Sentence {
 		}
 		
 		parseTree.relate(node1Index, node2Index);
-	}
-	
-	
-	/**
-	 * Devuelve el tipo de oracion, y si es desconocido lo calcula.
-	 * @return tipo de oracion
-	 */
-	public Type getType() {
-		if (type == Type.UNKNOWN) {
-			assignType();
-		}
-		return type;
-	}
-	
-	
-	/**
-	 * Asigna un tipo a la oracion segun su contenido y lo devuelve.
-	 * @return tipo de oracion
-	 */
-	private Type assignType() {
-		
-		for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
-			if (node.getId() != 0) {
-				
-				/*
-				 * TODO: Falta mejorar el reconocimiento de ORDENES con imperativos,
-				 * de AFIRMACIONES y resolver el tema de las INTERJECCIONES (si las
-				 * vamos a cargar a mano aca, o se hace antes del parsing).
-				 */
-				
-				// Si uno de los nodos es de tipo QUESTION o la palabra es
-				// un pronombre INTERROGATIVO, entonces es una pregunta.
-				
-				if (node.getData().getWord().getType() == WordTypes.Type.INTERROGATIVE
-					|| node.getData().getType().matches(".*FS-QUE.*")) {
-					type = Type.QUESTION;
-				}
-				
-				// Si uno de los nodos es de tipo COMMAND o la palabra es
-				// un verbo en modo IMPERATIVO, entonces es una orden.
-				
-				if (node.getData().getWord().getMode() == WordTypes.Mode.IMPERATIVE
-					|| node.getData().getType().matches(".*FS-COM.*")) {
-					type = Type.ORDER;
-				}
-				
-				// Si una de las palabras es una INTERJECTION, entonces es
-				// una interjeccion.
-				
-				else if (node.getData().getWord().getType() == WordTypes.Type.INTERJECTION) {
-					type = Type.DIALOG;
-				}
-				
-				// Si no es pregunta, orden ni interjeccion, entonces es afirmacion
-				else {
-					type = Type.ASSERTION;
-				}
-			}
-		}
-		return type;
 	}
 	
 
