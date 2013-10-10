@@ -31,7 +31,7 @@ public class Sentence {
 	public enum Type {
 		
 		// Utilizados para los tipos de oracion
-		ASSERTION, QUESTION, INTERJECTION, ORDER, UNKNOWN,
+		ASSERTION, QUESTION, DIALOG, ORDER, UNKNOWN,
 		
 		// Utilizados para las sub-oraciones (estructuras sintacticaas)
 		SUBJECT, DIRECT_OBJECT, INDIRECT_OBJECT, INTERROGATIVE, VERB
@@ -136,7 +136,7 @@ public class Sentence {
 				// una interjeccion.
 				
 				else if (node.getData().getWord().getType() == WordTypes.Type.INTERJECTION) {
-					type = Type.INTERJECTION;
+					type = Type.DIALOG;
 				}
 				
 				// Si no es pregunta, orden ni interjeccion, entonces es afirmacion
