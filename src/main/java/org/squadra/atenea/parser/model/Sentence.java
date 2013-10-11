@@ -397,9 +397,14 @@ public class Sentence {
 		
 		for(Node<SyntacticNode> node : parseTree.getGraph().values()) {
 			if (node.getId() != 0) {
-				sentenceString += node.getData().getWord().getName() + " ";
+				if (node.getData().getWord().getType().equals(WordTypes.Type.PUNCTUATION)) {
+					sentenceString += node.getData().getWord().getName();
+				}
+				else {
+					sentenceString += " " + node.getData().getWord().getName();
+				}
 			}
 		}
-		return sentenceString;
+		return sentenceString.trim();
 	}
 }
