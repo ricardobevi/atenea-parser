@@ -391,6 +391,18 @@ public class Sentence {
 	}
 	
 	
+	/**
+	 * Convierte el objeto Sentence es SimpleSentence (lista de Words)
+	 * @param contracted Si es false devuelve todas las palabras que devuelve
+	 * la gramatica; si es true unifica las contracciones en una sola palabra
+	 * (por ejemplo, "a el" -> "al", "jugar me" -> "jugarme".
+	 * @return SimpleSentence
+	 */
+	public SimpleSentence toSimpleSentence(boolean contracted) {
+		return new SimpleSentence(this.getAllWords(contracted), this.type);
+	}
+	
+	
 	@Override
 	public String toString() {
 		String sentenceString = "";
