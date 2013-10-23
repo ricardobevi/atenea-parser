@@ -84,8 +84,7 @@ public class CG3WordParser {
 		setHeuristic(syntacticTags);
 		setContraction(syntacticTags);
 		
-		System.out.println(
-				Arrays.asList(lexicalTags) + " " + Arrays.asList(syntacticTags));
+		//System.out.println(Arrays.asList(lexicalTags) + " " + Arrays.asList(syntacticTags));
 		
 		switch (lexicalTags[0]) {
 		
