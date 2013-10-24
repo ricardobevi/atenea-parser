@@ -246,6 +246,22 @@ public class Sentence {
 	}
 	
 	/**
+	 * Devuelve una lista de sustantivos (comunes y propios).
+	 * @return Lista de Words sustantivos
+	 */
+	public ArrayList<Word> getProperNouns() {
+		ArrayList<Word> nouns = new ArrayList<Word>();
+		
+		for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
+			if (node.getData().getWord().getType() == WordTypes.Type.PROPER_NAME) {
+				
+				nouns.add(node.getData().getWord());
+			}
+		}
+		return nouns;
+	}
+	
+	/**
 	 * Devuelve una lista de adjetivos.
 	 * @return Lista de Words adjetivos
 	 */
