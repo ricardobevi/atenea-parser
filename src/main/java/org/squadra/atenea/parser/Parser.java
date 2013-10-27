@@ -20,7 +20,7 @@ public class Parser {
 		
 		// Conecto con el programa de la gramatica y obtengo la salida para el parsing
 		CG3Connection conn = new HttpCG3Connection();
-		rawPreParsedSentenceString = conn.getPreParsedSentence(input);
+		rawPreParsedSentenceString = conn.getPreParsedSentence(" " + input);
 		
 		// Parseo la salida del programa y obtengo un objeto Sentence
 		Sentence sentence = CG3SentenceParser.ParseSentence(rawPreParsedSentenceString);

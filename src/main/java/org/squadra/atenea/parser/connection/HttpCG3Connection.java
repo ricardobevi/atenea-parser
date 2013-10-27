@@ -25,7 +25,7 @@ public class HttpCG3Connection implements CG3Connection {
 
 			doc = Jsoup.connect(
 					"http://bartgentoo.no-ip.org/parser/?input="
-							+ sentenceToParse).timeout(5000).get();
+							+ sentenceToParse).timeout(10000).get();
 
 			Elements content = doc.getElementsByTag("pre");
 

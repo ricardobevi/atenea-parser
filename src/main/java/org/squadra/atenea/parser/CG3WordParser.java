@@ -123,8 +123,13 @@ public class CG3WordParser {
 			// es numerico (cargo tipo, genero y numero)
 			case "NUM":
 				type = WordTypes.Type.NUMERIC;
-				setGender(lexicalTags[1]);
-				setNumber(lexicalTags[2]);
+				if (lexicalTags.length > 2) {
+					setGender(lexicalTags[1]);
+					setNumber(lexicalTags[2]);
+				}
+				else {
+					setNumber(lexicalTags[1]);
+				}
 				break;
 			
 			// es interjeccion (solo cargo el tipo)

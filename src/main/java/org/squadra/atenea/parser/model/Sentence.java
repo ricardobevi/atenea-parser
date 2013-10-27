@@ -106,46 +106,43 @@ public class Sentence {
 			int lastContraction = 0;
 			ArrayList<Word> wordsToContract = new ArrayList<Word>();
 			
-	 		for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
-				if (node.getId() != 0) {
+	 		for (int i = 1; i < parseTree.getGraph().size(); i++) {
+				
+	 			Node<SyntacticNode> node = parseTree.getGraph().get(i);
 					
-					int contraction = node.getData().getWord().getContraction();
+				int contraction = node.getData().getWord().getContraction();
+				
+				// Si termina una secuencia de palabras a contraer
+				if (contraction <= lastContraction && lastContraction >= 2) {
 					
-					// Si termina una secuencia de palabras a contraer
-					if (contraction <= lastContraction && lastContraction >= 2) {
-						
-						// Contraigo las palabras almacenadas en la lista
-						String newName = "";
-						for (Word word : wordsToContract) {
-							newName += word.getName();
-						}
-						if (newName.toLowerCase().matches("ael|deel")) {
-							System.out.println("MATCH");
-							newName = newName.replaceFirst("e|E", "");
-						}
-						wordsToContract.get(0).setName(newName);
-						words.add(wordsToContract.get(0));
-						wordsToContract.clear();
+					// Contraigo las palabras almacenadas en la lista
+					String newName = "";
+					for (Word word : wordsToContract) {
+						newName += word.getName();
 					}
-					
-					// Si la palabra forma parte de una contraccion la guardo en
-					// una lista temporal.
-					if (contraction > 0) {
-						wordsToContract.add(node.getData().getWord());
+					if (newName.toLowerCase().matches("ael|deel")) {
+						newName = newName.replaceFirst("e|E", "");
 					}
-					// Sino, la guardo en la lista de palabras a devolver
-					else {
-						words.add(node.getData().getWord());
-					}
-					lastContraction = contraction;
+					wordsToContract.get(0).setName(newName);
+					words.add(wordsToContract.get(0));
+					wordsToContract.clear();
 				}
+				
+				// Si la palabra forma parte de una contraccion la guardo en
+				// una lista temporal.
+				if (contraction > 0) {
+					wordsToContract.add(node.getData().getWord());
+				}
+				// Sino, la guardo en la lista de palabras a devolver
+				else {
+					words.add(node.getData().getWord());
+				}
+				lastContraction = contraction;
 			}
 		}
 		else {
-	 		for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
-				if (node.getId() != 0) {
-					words.add(node.getData().getWord());
-				}
+			for (int i = 1; i < parseTree.getGraph().size(); i++) {
+				words.add(parseTree.getGraph().get(i).getData().getWord());
 			}
 		}
 		return words;
