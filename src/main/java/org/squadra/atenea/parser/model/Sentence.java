@@ -106,10 +106,8 @@ public class Sentence {
 			int lastContraction = 0;
 			ArrayList<Word> wordsToContract = new ArrayList<Word>();
 			
-	 		for (int i = 1; i < parseTree.getGraph().size(); i++) {
+			for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
 				
-	 			Node<SyntacticNode> node = parseTree.getGraph().get(i);
-					
 				int contraction = node.getData().getWord().getContraction();
 				
 				// Si termina una secuencia de palabras a contraer
@@ -141,8 +139,10 @@ public class Sentence {
 			}
 		}
 		else {
-			for (int i = 1; i < parseTree.getGraph().size(); i++) {
-				words.add(parseTree.getGraph().get(i).getData().getWord());
+			for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
+				if (node.getId() != 0) {
+					words.add(node.getData().getWord());
+				}
 			}
 		}
 		return words;
