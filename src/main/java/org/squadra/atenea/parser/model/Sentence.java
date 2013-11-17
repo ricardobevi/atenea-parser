@@ -108,34 +108,38 @@ public class Sentence {
 			
 			for (Node<SyntacticNode> node : parseTree.getGraph().values()) {
 				
-				int contraction = node.getData().getWord().getContraction();
+				if (node.getId() != 0) {
 				
-				// Si termina una secuencia de palabras a contraer
-				if (contraction <= lastContraction && lastContraction >= 2) {
+					int contraction = node.getData().getWord().getContraction();
 					
-					// Contraigo las palabras almacenadas en la lista
-					String newName = "";
-					for (Word word : wordsToContract) {
-						newName += word.getName();
+					// Si termina una secuencia de palabras a contraer
+					if (contraction <= lastContraction && lastContraction >= 2) {
+						
+						// Contraigo las palabras almacenadas en la lista
+						String newName = "";
+						for (Word word : wordsToContract) {
+							newName += word.getName();
+						}
+						if (newName.toLowerCase().matches("ael|deel")) {
+							newName = newName.replaceFirst("e|E", "");
+						}
+						wordsToContract.get(0).setName(newName);
+						words.add(wordsToContract.get(0));
+						wordsToContract.clear();
 					}
-					if (newName.toLowerCase().matches("ael|deel")) {
-						newName = newName.replaceFirst("e|E", "");
+					
+					// Si la palabra forma parte de una contraccion la guardo en
+					// una lista temporal.
+					if (contraction > 0) {
+						wordsToContract.add(node.getData().getWord());
 					}
-					wordsToContract.get(0).setName(newName);
-					words.add(wordsToContract.get(0));
-					wordsToContract.clear();
+					// Sino, la guardo en la lista de palabras a devolver
+					else {
+						words.add(node.getData().getWord());
+					}
+					lastContraction = contraction;
+					
 				}
-				
-				// Si la palabra forma parte de una contraccion la guardo en
-				// una lista temporal.
-				if (contraction > 0) {
-					wordsToContract.add(node.getData().getWord());
-				}
-				// Sino, la guardo en la lista de palabras a devolver
-				else {
-					words.add(node.getData().getWord());
-				}
-				lastContraction = contraction;
 			}
 		}
 		else {
